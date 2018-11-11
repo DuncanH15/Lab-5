@@ -124,4 +124,9 @@ public class SudokuPrivateMethodsTest {
 		}
 
 	}
+	
+	@Test
+	public void RemoveCellsTest() {
+		
+	}
 }

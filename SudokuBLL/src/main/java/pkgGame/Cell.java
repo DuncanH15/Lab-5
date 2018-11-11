@@ -1,11 +1,15 @@
 package pkgGame;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
 
 public class Cell {
 	private int iRow;
 	private int iCol;
 
+
+	
 	public Cell(int iRow, int iCol) {
 		super();
 		this.iRow = iRow;
@@ -19,10 +23,11 @@ public class Cell {
 	public int getiCol() {
 		return iCol;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(iRow, iCol);
 	}
+
 
 }

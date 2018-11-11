@@ -1,6 +1,7 @@
 package pkgGame;
 
 import java.io.Serializable;
+import java.util.concurrent.ThreadLocalRandom;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +16,7 @@ import pkgEnum.ePuzzleViolation;
 import pkgHelper.LatinSquare;
 import pkgHelper.PuzzleViolation;
 
+
 /**
  * Sudoku - This class extends LatinSquare, adding methods, constructor to
  * handle Sudoku logic
@@ -26,6 +28,9 @@ import pkgHelper.PuzzleViolation;
  */
 public class Sudoku extends LatinSquare implements Serializable {
 
+	
+
+	
 	/**
 	 * 
 	 * iSize - the length of the width/height of the Sudoku puzzle.
@@ -104,14 +109,19 @@ public class Sudoku extends LatinSquare implements Serializable {
 
 	}
 
-	public Sudoku(eGameDifficulty eGD) {
+	public Sudoku() {
 		this.eGD = eGameDifficulty.Easy;
 	}
 
-	public Sudoku(int eGD) {
-		eGD = this.eGD.getiDifficulty();
-		Sudoku(int[][] puzzle);
-		
+	public Sudoku(int iSize, eGameDifficulty eGD) {
+		this.iSize = iSize;
+		this.eGD = eGameDifficulty.Easy;
+
+	}
+	
+	public static void main(String args[]) {
+		Sudoku s1 = new Sudoku(9, eGameDifficulty.Easy);
+		s1.PrintPuzzle();
 	}
 
 	/**
@@ -134,6 +144,61 @@ public class Sudoku extends LatinSquare implements Serializable {
 		}
 	}
 
+	public boolean isDifficultyMet(int iPossibleValues) {
+		if (iPossibleValues >= this.eGD.getiDifficulty()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private int PossibleValuesMultiplier(java.util.HashMap<java.lang.Integer, Sudoku.SudokuCell> cells) throws Exception {
+		Sudoku s1 = null;
+		int random1;
+		int random2;
+		int pvm = 1;
+		try {
+			s1 = new Sudoku(9);
+		} catch (Exception e) {
+		}
+		this.eGD = eGameDifficulty.Easy;
+		int i = 0;
+		while (s1.isDifficultyMet(i) != true) {
+			random1 = ThreadLocalRandom.current().nextInt(0, 9);
+			random2 = ThreadLocalRandom.current().nextInt(0, 9);
+
+			this.getPuzzle()[random1][random2] = 0;
+			s1.SetRemainingCells();
+
+			for (int iRow = 0; iRow < iSize; iRow++) {
+				for (int iCol = 0; iCol < iSize; iCol++) {
+					SudokuCell cell = new SudokuCell(iRow, iCol);
+					pvm *= cell.getLstRemainingValidValues().size();
+				}
+
+			}
+		}
+		return pvm;
+	}
+
+	private void RemoveCells() {
+		int pvm = 1;
+		
+		while(this.isDifficultyMet(pvm) != true) {
+			int random1 = ThreadLocalRandom.current().nextInt(0, 9);
+			int random2 = ThreadLocalRandom.current().nextInt(0, 9);
+			
+			this.getPuzzle()[random1][random2] = 0;
+			
+			for(int iRow=0; iRow < iSize; iRow++) {
+				for(int iCol = 0; iCol<iSize; iCol++) {
+					SudokuCell cell = new SudokuCell(iRow, iCol);
+					pvm *= cell.getLstRemainingValidValues().size();
+			}
+		}
+	}
+	}
+
 	/**
 	 * SetCells - purpose of this method is to create a HashMap of all the cells in
 	 * the puzzle. If the puzzle is 9X9, there will be 81 cells in the puzzle.
@@ -152,6 +217,16 @@ public class Sudoku extends LatinSquare implements Serializable {
 				SudokuCell c = new SudokuCell(iRow, iCol);
 				c.setlstValidValues(getAllValidCellValues(iCol, iRow));
 				c.ShuffleValidValues();
+				cells.put(c.hashCode(), c);
+			}
+		}
+	}
+
+	private void SetRemainingCells() {
+		for (int iRow = 0; iRow < iSize; iRow++) {
+			for (int iCol = 0; iCol < iSize; iCol++) {
+				SudokuCell c = new SudokuCell(iRow, iCol);
+				c.setlstValidValues(getAllValidCellValues(iCol, iRow));
 				cells.put(c.hashCode(), c);
 			}
 		}
@@ -591,6 +666,7 @@ public class Sudoku extends LatinSquare implements Serializable {
 		private int iRow;
 		private int iCol;
 		private ArrayList<Integer> lstValidValues = new ArrayList<Integer>();
+		private ArrayList<Integer> lstRemainingValidValues = new ArrayList<Integer>();
 
 		public SudokuCell(int iRow, int iCol) {
 			super(iRow, iCol);
@@ -612,6 +688,10 @@ public class Sudoku extends LatinSquare implements Serializable {
 
 		public ArrayList<Integer> getLstValidValues() {
 			return lstValidValues;
+		}
+
+		public ArrayList<Integer> getLstRemainingValidValues() {
+			return lstRemainingValidValues;
 		}
 
 		public void setlstValidValues(HashSet<Integer> hsValidValues) {
@@ -663,4 +743,7 @@ public class Sudoku extends LatinSquare implements Serializable {
 
 		}
 	}
+	
+	
+
 }

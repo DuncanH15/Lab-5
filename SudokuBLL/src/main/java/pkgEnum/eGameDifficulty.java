@@ -26,14 +26,23 @@ public enum eGameDifficulty {
 		return iDifficulty;
 	}
 
-	private eGameDifficulty get(String strName) {
+//	private eGameDifficulty get(String strName) {
+//		for (eGameDifficulty eGD : eGameDifficulty.values()) {
+//			System.out.println(eGD.name().toUpperCase());
+//			if (eGD.name().toUpperCase().equals(strName.toUpperCase())) {
+//				return eGD;
+//			}
+//		}
+//		return null;
+//	}
+	
+	public eGameDifficulty get(int iValueToCheck) {
+		eGameDifficulty eGDSelected = null;
 		for (eGameDifficulty eGD : eGameDifficulty.values()) {
-			System.out.println(eGD.name().toUpperCase());
-			if (eGD.name().toUpperCase().equals(strName.toUpperCase())) {
-				return eGD;
+			if (iValueToCheck >= eGD.iDifficulty) {
+				eGDSelected = eGD;
 			}
-		}
-		return null;
+		} return eGDSelected;
 	}
 
 //	@Override
